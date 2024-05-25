@@ -15,7 +15,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 
@@ -24,9 +24,12 @@ async def read_root():
     return {"welcome": "Language Translation API is running"}
 
 
-
 @app.post("/predict/", status_code=200)
 async def translate_query(request: str):
 
-    return {"status_code": 200,
-            "response": f"This is a placeholder response for {request}"},
+    return (
+        {
+            "status_code": 200,
+            "response": f"This is a placeholder response for {request}",
+        },
+    )

@@ -2,3 +2,5 @@ __pycache__/
 *.gz
 .github/
 .devcontainer/
+.vscode/
+data/
