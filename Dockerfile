@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 # Install packages
 RUN apt update
-RUN apt install -y curl wget sudo gcc
+RUN apt install -y curl wget sudo gcc git
 
 # Add uv for faster dependency management
 ENV VIRTUAL_ENV=/home/packages/.venv
