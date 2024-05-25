@@ -15,7 +15,7 @@ WORKDIR /code
 COPY ./env/requirements.in /code/env/requirements.in
 RUN /root/.cargo/bin/uv venv /home/packages/.venv
 RUN /root/.cargo/bin/uv pip compile  /code/env/requirements.in -o /code/env/requirements.txt
-RUN /root/.cargo/bin/uv pip install --no-cache -r /code/env/requirements.txt
+RUN /root/.cargo/bin/uv pip install --system --no-cache -r /code/env/requirements.txt
 
 # Copy app directory
 COPY ./src/app /code/app
