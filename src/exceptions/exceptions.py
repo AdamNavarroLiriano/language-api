@@ -9,3 +9,6 @@ class LanguagePairNotSupportedError(Exception):
         self.tgt = tgt
         self.message = message.format(src=src, tgt=tgt)
         super().__init__(self.message)
+
+
+__all__ = ["LanguagePairNotSupportedError"]

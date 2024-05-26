@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from ..models.pretrained import PRETRAINED_MODELS
+from ..exceptions.exceptions import LanguagePairNotSupportedError
+from ..models.pretrained import LANGUAGE_PAIRS, PRETRAINED_MODELS
 
 app = FastAPI(title="Language Translation API")
 
@@ -37,18 +39,27 @@ def load_pretrained_model(src: str, tgt: str) -> tuple:
     return (model, tokenizer)
 
 
+@app.exception_handler(LanguagePairNotSupportedError)
+def language_pair_exception_handler(
+    request: Request, exc: LanguagePairNotSupportedError
+):
+    return JSONResponse(
+        status_code=404,
+        content={"message": exc.message},
+    )
+
+
 @app.get("/")
 async def read_root() -> dict[str, str]:
-    """API's root message
-
-    :return: welcome message
-    :rtype: dict[str, str]
-    """
+    """API's root message"""
     return {"welcome": "Language Translation API is running"}
 
 
 @app.post("/predict/", status_code=200)
 async def translate_query(src_text: str, src: str, tgt: str) -> dict:
+    if (src, tgt) not in LANGUAGE_PAIRS:
+        raise LanguagePairNotSupportedError(src, tgt)
+
     # Load model
     model, tokenizer = load_pretrained_model(src, tgt)
 
@@ -60,9 +71,9 @@ async def translate_query(src_text: str, src: str, tgt: str) -> dict:
         tokenizer.decode(t, skip_special_tokens=True) for t in translated
     ]
 
-    return (
-        {
-            "status_code": 200,
-            "response": f"{translated_text[0]}",
-        },
-    )
+    response = {
+        "status_code": 200,
+        "response": f"{translated_text[0]}",
+    }
+
+    return response
