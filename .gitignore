@@ -1,1 +1,7 @@
 __pycache__/
+*.gz
+.github/
+.devcontainer/
+.vscode/
+data/
+cached_models/
