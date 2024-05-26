@@ -1,76 +1,36 @@
-import ast
-import linecache
-
 import numpy as np
 import pandas as pd
-import transformers
+from transformers import MarianMTModel, MarianTokenizer
+
+LANGUAGE_PAIRS: tuple[tuple[str]] = (("en", "da"), ("da", "en"))
+CACHE_PATH: str = "../../cached_models/marianmodels/"
 
 
-def check_data(dataset: str) -> tuple[int]:
-    with open(f"../../data/{dataset}.metadata", "r") as md:
-        md_len = len(md.readlines())
-    with open(f"../../data/{dataset}.src", "r") as src:
-        src_len = len(src.readlines())
-    with open(f"../../data/{dataset}.tgt", "r") as tgt:
-        tgt_len = len(tgt.readlines())
+def load_models(language_pair: tuple[str], cache_path: str) -> dict:
+    """Loads pretrained models from MarianMT
 
-    return md_len, src_len, tgt_len
+    :param language_pair: tuple containing src language and tgt language
+    :type language_pair: tuple[str]
+    :param cache_path: path to save cache for loading models
+    :type cache_path: str
+    :return: dictionary containing tokenizer and model objects
+    :rtype: dict
+    """
+    # Get src and tgt language pairs
+    src, tgt = language_pair
+    model_name = f"Helsinki-NLP/opus-mt-{src}-{tgt}"
 
+    # Load from huggingface or cache
+    tokenizer = MarianTokenizer.from_pretrained(model_name)
+    model = MarianMTModel.from_pretrained(model_name, cache_dir=cache_path)
 
-def load_metadata(dataset: str) -> pd.DataFrame:
-    metadata = []
-    with open(f"../../data/{dataset}.metadata", "r") as file:
-        for line in file:
-            parsed_lined = ast.literal_eval(line.strip())
-            metadata.append(parsed_lined)
-
-    metadata = pd.DataFrame(metadata, columns=["src_lang", "tgt_lang"])
-
-    return metadata
-
-
-def get_language_pairs(metadata: pd.DataFrame, langs: tuple[str]) -> pd.DataFrame:
-    metadata = metadata.copy()
-
-    filtered_rows = metadata.loc[
-        (metadata["src_lang"].isin(langs)) & (metadata["tgt_lang"].isin(langs))
-    ]
-
-    return filtered_rows
+    return {"tokenizer": tokenizer, "model": model}
+    # return {f"pretrained-{src}-{tgt}": {"tokenizer": tokenizer, "model": model}}
 
 
-def get_translations(dataset: str, indices: list[int]):
-    with open(f"../../data/{dataset}.src") as f:
-        source_text = f.readlines()
-        source_text = np.array(source_text)[indices]
-
-    with open(f"../../data/{dataset}.tgt") as f:
-        target_text = f.readlines()
-        target_text = np.array(target_text)[indices]
-
-    return source_text, target_text
-
-
-def make_translation(row):
-    paired_text = {
-        row["src_lang"]: row["source_text"],
-        row["tgt_lang"]: row["target_text"],
-    }
-
-    return {"translation": paired_text}
-
-
-metadata_df = pd.read_fwf("../../data/train.metadata", header=None)
-
-languages = ("en", "da")
-train_metadata = load_metadata("train")
-df = get_language_pairs(train_metadata, languages)
-
-source_text, target_text = get_translations("train", indices=df.index.tolist())
-
-# Create columns
-df["source_text"] = source_text
-df["source_text"] = df["source_text"].str.strip()
-df["target_text"] = target_text
-df["target_text"] = df["target_text"].str.strip()
-df["translation"] = df.apply(make_translation, axis=1)
+PRETRAINED_MODELS = {
+    f"pretrained-{language_pair[0]}-{language_pair[1]}": load_models(
+        language_pair, CACHE_PATH
+    )
+    for language_pair in LANGUAGE_PAIRS
+}
