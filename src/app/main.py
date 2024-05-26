@@ -43,6 +43,7 @@ def load_pretrained_model(src: str, tgt: str) -> tuple:
 def language_pair_exception_handler(
     request: Request, exc: LanguagePairNotSupportedError
 ):
+    """Returns LanguagePairNotSupportedError"""
     return JSONResponse(
         status_code=404,
         content={"message": exc.message},
@@ -57,6 +58,7 @@ async def read_root() -> dict[str, str]:
 
 @app.post("/predict/", status_code=200)
 async def translate_query(src_text: str, src: str, tgt: str) -> dict:
+    """Translates a text from a source language, to a target language"""
     if (src, tgt) not in LANGUAGE_PAIRS:
         raise LanguagePairNotSupportedError(src, tgt)
 

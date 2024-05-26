@@ -25,7 +25,6 @@ def load_models(language_pair: tuple[str], cache_path: str) -> dict:
     model = MarianMTModel.from_pretrained(model_name, cache_dir=cache_path)
 
     return {"tokenizer": tokenizer, "model": model}
-    # return {f"pretrained-{src}-{tgt}": {"tokenizer": tokenizer, "model": model}}
 
 
 PRETRAINED_MODELS = {
