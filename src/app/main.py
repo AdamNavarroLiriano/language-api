@@ -22,6 +22,15 @@ app.add_middleware(
 
 
 def load_pretrained_model(src: str, tgt: str) -> tuple:
+    """Loads pretrained models
+
+    :param src: language code for source text
+    :type src: str
+    :param tgt: language code for target text
+    :type tgt: str
+    :return: tuple where first element is model object and second element is tokenizer object
+    :rtype: tuple
+    """
     model_dict = PRETRAINED_MODELS[f"pretrained-{src}-{tgt}"]
     tokenizer = model_dict["tokenizer"]
     model = model_dict["model"]
@@ -29,12 +38,17 @@ def load_pretrained_model(src: str, tgt: str) -> tuple:
 
 
 @app.get("/")
-async def read_root():
+async def read_root() -> dict[str, str]:
+    """API's root message
+
+    :return: welcome message
+    :rtype: dict[str, str]
+    """
     return {"welcome": "Language Translation API is running"}
 
 
 @app.post("/predict/", status_code=200)
-async def translate_query(src_text: str, src: str, tgt: str):
+async def translate_query(src_text: str, src: str, tgt: str) -> dict:
     # Load model
     model, tokenizer = load_pretrained_model(src, tgt)
 
