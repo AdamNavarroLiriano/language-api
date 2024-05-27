@@ -6,3 +6,4 @@ torch
 sentencepiece
 fastparquet 
 pyarrow
+sacrebleu
