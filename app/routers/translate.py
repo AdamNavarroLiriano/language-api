@@ -2,15 +2,15 @@ from fastapi import APIRouter, Query
 import typing
 import torch
 
-from ..exceptions import LanguagePairNotSupportedError
-from ..models import (
+from app.exceptions import LanguagePairNotSupportedError
+from app.models import (
     CACHE_PATH,
     FINETUNED_PATH,
     FINETUNED_PAIRS,
     PRETRAINED_PAIRS,
 )
-from ..models.pretrained import load_pretrained_model
-from ..models.finetuned import load_finetuned_model
+from app.models.pretrained import load_pretrained_model
+from app.models.finetuned import load_finetuned_model
 
 DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
 

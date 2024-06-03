@@ -1,9 +1,8 @@
 from transformers import MarianMTModel, MarianTokenizer
-import torch
 import os
 
 FINETUNED_PAIRS: tuple[tuple[str]] = (("en", "sv"),)
-FINETUNED_PATH: str = "../data/finetuned/"
+FINETUNED_PATH: str = "../../data/finetuned/"
 
 
 def load_finetuned_model(

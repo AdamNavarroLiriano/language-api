@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 from transformers import MarianMTModel, MarianTokenizer
 
 PRETRAINED_PAIRS: tuple[tuple[str]] = (
@@ -8,7 +6,7 @@ PRETRAINED_PAIRS: tuple[tuple[str]] = (
     ("sv", "en"),
 )
 
-CACHE_PATH: str = "../data/cached_models/marianmodels/"
+CACHE_PATH: str = "../../data/cached_models/marianmodels/"
 
 
 def load_pretrained_model(language_pair: tuple[str], cache_path: str) -> dict:

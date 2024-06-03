@@ -10,19 +10,25 @@ ADD https://astral.sh/uv/install.sh /install.sh
 RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh
 
 # Set working directory
-WORKDIR /code
+WORKDIR /app
 
-COPY ./env/requirements.in /code/env/requirements.in
+COPY ./env/requirements.in /app/env/requirements.in
 RUN /root/.cargo/bin/uv venv /home/packages/.venv
-RUN /root/.cargo/bin/uv pip compile  /code/env/requirements.in -o /code/env/requirements.txt
-RUN /root/.cargo/bin/uv pip install --system --no-cache -r /code/env/requirements.txt
+RUN /root/.cargo/bin/uv pip compile  /app/env/requirements.in -o /app/env/requirements.txt
+RUN /root/.cargo/bin/uv pip install --system --no-cache -r /app/env/requirements.txt
+
+# Copy models
+COPY data/finetuned /app/../data/finetuned
+COPY data/cached_models /app/../data/cached_models
 
 # Copy app directory
-COPY ./src/app /code/app
+COPY ./app/main.py /app/main.py
+COPY ./app/__init__.py /app/__init__.py
 
 # Copy other code directory
-COPY ./src/exceptions /code/exceptions
-COPY ./src/models /code/models
+COPY ./app/exceptions /app/exceptions
+COPY ./app/models /app/models
+COPY ./app/routers /app/routers
 
 EXPOSE 80
 
