@@ -1,8 +1,5 @@
+from fastapi import APIRouter, Query
 import typing
-
-from fastapi import FastAPI, Request, Query
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 import torch
 
 from ..exceptions import LanguagePairNotSupportedError
@@ -17,42 +14,16 @@ from ..models.finetuned import load_finetuned_model
 
 DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
 
-app = FastAPI(title="Language Translation API")
-
-origins = [
-    "http://localhost:3000",
-    "localhost:3000",
-    "*",
-    "http://127.0.0.1:8089/",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+router = APIRouter()
 
 
-@app.exception_handler(LanguagePairNotSupportedError)
-def language_pair_exception_handler(
-    request: Request, exc: LanguagePairNotSupportedError
-):
-    """Returns LanguagePairNotSupportedError"""
-    return JSONResponse(
-        status_code=404,
-        content={"message": exc.message},
-    )
-
-
-@app.get("/")
+@router.get("/")
 async def read_root() -> dict[str, str]:
     """API's root message"""
     return {"welcome": "Language Translation API is running"}
 
 
-@app.post("/predict/", status_code=200)
+@router.post("/sentence/", status_code=200)
 async def translate_query(
     src_text: str,
     src: typing.Annotated[str, Query(max_length=2)],
