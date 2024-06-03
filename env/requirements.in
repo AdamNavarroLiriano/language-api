@@ -1,8 +1,8 @@
-fastapi
+fastapi==0.111.0
 pandas
 numpy
-transformers
 torch
+transformers==4.41.1
 sentencepiece
 fastparquet 
 pyarrow

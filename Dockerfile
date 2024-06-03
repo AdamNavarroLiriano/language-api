@@ -20,4 +20,12 @@ RUN /root/.cargo/bin/uv pip install --system --no-cache -r /code/env/requirement
 # Copy app directory
 COPY ./src/app /code/app
 
-CMD ["fastapi", "run", "app/main.py", "--port", "80"]
+# Copy other code directory
+COPY ./src/exceptions /code/exceptions
+COPY ./src/models /code/models
+
+EXPOSE 80
+
+CMD ["bash"]
+
+# CMD ["fastapi", "run", "/code/app/main.py", "--port", "80"]
