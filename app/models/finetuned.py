@@ -30,7 +30,7 @@ def load_finetuned_model(
 
 FINETUNED_MODELS = {
     f"finetuned-{language_pair[0]}-{language_pair[1]}": load_finetuned_model(
-        language_pair, FINETUNED_PAIRS
+        language_pair, FINETUNED_PATH
     )
     for language_pair in FINETUNED_PAIRS
 }
