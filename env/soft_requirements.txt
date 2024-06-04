@@ -1,0 +1,4 @@
+plotnine==0.13.6
+jupyterlab
+ipykernel
+black 

@@ -5,3 +5,4 @@ __pycache__/
 .vscode/
 data/
 cached_models/
+.ipynb_checkpoints/

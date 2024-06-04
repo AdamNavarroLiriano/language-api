@@ -1,12 +1,15 @@
-import numpy as np
-import pandas as pd
 from transformers import MarianMTModel, MarianTokenizer
 
-LANGUAGE_PAIRS: tuple[tuple[str]] = (("en", "da"), ("da", "en"))
-CACHE_PATH: str = "../../cached_models/marianmodels/"
+PRETRAINED_PAIRS: tuple[tuple[str]] = (
+    ("en", "da"),
+    ("da", "en"),
+    ("sv", "en"),
+)
+
+CACHE_PATH: str = "../../data/cached_models/marianmodels/"
 
 
-def load_models(language_pair: tuple[str], cache_path: str) -> dict:
+def load_pretrained_model(language_pair: tuple[str], cache_path: str) -> dict:
     """Loads pretrained models from MarianMT
 
     :param language_pair: tuple containing src language and tgt language
@@ -25,12 +28,11 @@ def load_models(language_pair: tuple[str], cache_path: str) -> dict:
     model = MarianMTModel.from_pretrained(model_name, cache_dir=cache_path)
 
     return {"tokenizer": tokenizer, "model": model}
-    # return {f"pretrained-{src}-{tgt}": {"tokenizer": tokenizer, "model": model}}
 
 
 PRETRAINED_MODELS = {
-    f"pretrained-{language_pair[0]}-{language_pair[1]}": load_models(
+    f"pretrained-{language_pair[0]}-{language_pair[1]}": load_pretrained_model(
         language_pair, CACHE_PATH
     )
-    for language_pair in LANGUAGE_PAIRS
+    for language_pair in PRETRAINED_PAIRS
 }
