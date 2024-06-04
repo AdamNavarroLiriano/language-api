@@ -2,7 +2,7 @@ from transformers import MarianMTModel, MarianTokenizer
 import os
 
 FINETUNED_PAIRS: tuple[tuple[str]] = (("en", "sv"),)
-FINETUNED_PATH: str = "../../data/finetuned/"
+FINETUNED_PATH: str = "adamnavarro"
 
 
 def load_finetuned_model(
@@ -21,10 +21,16 @@ def load_finetuned_model(
     src, tgt = language_pair
     model_name = f"{finetuned_path}/finetuned-mt-{src}-{tgt}"
 
-    assert os.path.exists(model_name), f"{model_name} does not exist"
-
     # Load from huggingface or cache
     tokenizer = MarianTokenizer.from_pretrained(model_name)
     model = MarianMTModel.from_pretrained(model_name)
 
     return {"tokenizer": tokenizer, "model": model}
+
+
+FINETUNED_MODELS = {
+    f"finetuned-{language_pair[0]}-{language_pair[1]}": load_finetuned_model(
+        language_pair, FINETUNED_PAIRS
+    )
+    for language_pair in FINETUNED_PAIRS
+}

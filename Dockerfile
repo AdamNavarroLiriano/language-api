@@ -18,8 +18,8 @@ RUN /root/.cargo/bin/uv pip compile  /app/env/requirements.in -o /app/env/requir
 RUN /root/.cargo/bin/uv pip install --system --no-cache -r /app/env/requirements.txt
 
 # Copy models
-COPY data/finetuned /app/../data/finetuned
-COPY data/cached_models /app/../data/cached_models
+# COPY data/finetuned /app/../data/finetuned
+# COPY data/cached_models /app/../data/cached_models
 
 # Copy app directory
 COPY ./app/main.py /app/main.py

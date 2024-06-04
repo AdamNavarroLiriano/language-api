@@ -20,7 +20,7 @@ router = APIRouter()
 @router.get("/")
 async def read_root() -> dict[str, str]:
     """API's root message"""
-    return {"welcome": "Language Translation API is running"}
+    return {"message": "Language Translation API is running"}
 
 
 @router.post("/sentence/", status_code=200)
