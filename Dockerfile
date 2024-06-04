@@ -32,6 +32,6 @@ COPY ./app/routers /app/routers
 
 EXPOSE 80
 
-CMD ["bash"]
+# CMD ["bash"]
 
-# CMD ["fastapi", "run", "/code/app/main.py", "--port", "80"]
+CMD ["fastapi", "run", "main.py", "--port", "80"]
