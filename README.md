@@ -67,6 +67,8 @@ Before deploying the API for production use, it's crucial to implement security 
 
 Containerization and orchestration can help scale the service based on load and model complexity. Asynchronous programming, hardware optimization, and efficient model loading can enhance latency.
 
+There are other software engineering practices that ought to be implemented such as unit testing and integration testing. This gives confidence in the workings of the software and their dependencies. Additionally, it can serve as documentation for future developers working on the product.
+
 From an ethical standpoint, the quality of the models' output should be monitored to ensure the accuracy and fairness of translations.
 
 ## Roadmap and Future Scope
