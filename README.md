@@ -69,6 +69,19 @@ Containerization and orchestration can help scale the service based on load and 
 
 From an ethical standpoint, the quality of the models' output should be monitored to ensure the accuracy and fairness of translations.
 
-## Future Scope
+## Roadmap and Future Scope
 
 To further expand and improve the MT system, consider using larger and more diverse datasets for training, such as the ones listed [here](https://metatext.io/datasets-list/translation-task). The use of pretrained or multilingual models can expedite the training process.
+
+An strategic roadmap for the product looks as follow:
+1. Introduce authentication and authorization, and enable HTTPS on the container. This is necessary for security reasons.
+2. Deploy on a container services (Amazon ECS, Azure Containers, etc.) and add logging to monitor usage. We would get a sense on the traffic and prioritize aspects such as improving inference, availabilty, scaling and concurrency.
+3. Having a working product, next task is to expand the translation services for all 12 language pairs in the combination set (da, en, nb, sv). This can be done as follows:
+   1. Using pretrained models, the models with highest BLEU scores can be made available already.
+   2. Simmultaneously, the models can be finetuned with the current dataset to improve their performance.
+   3. Afterwards, models from scratch need to be trained for the pairs which are not currently supported.
+4. Expand to different language pairs.
+     * Priorization can be done based on a product framework such as RICE (Reach, Impact, Confidence, Effort) or MoSCoW (Must-Have, Should-Have, Could-Have, Won't-Have).
+     * Ideally, we would like to add support to combinations of languages that are impactful and where there's a solid starting base (e.g. English-Spanish, Spanish-English). However, the vision of the product and the market it is aimed to cover is a great consideration.
+5. Add extra features and customization, to increase the reach of the product.
+     * For example, there could be models which are aimed at subtitles generation, advertisement, literature or even aid the translation of judicial documents.
