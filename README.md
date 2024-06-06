@@ -54,6 +54,16 @@ We used both pretrained models and finetuned models, based on the [Marian](https
  
 All models were evaluated using the BLEU metric, implemented via the [sacrebleu](https://github.com/mjpost/sacrebleu) python package.
 
+The results on test set, are as follow:
+| Language pair | Model type | BLEU | BLEU (lowercase) |
+| ------------- | ---------- | ---- | ---------------- |
+| en-da         | pretrained | 40.9 | 43.1             |
+| da-en         | pretrained | 40.2 | 46.5             |
+| en-sv         | finetuned  | 33.2 | 34.5             |
+| en-sv         | pretrained | 32.4 | 33.6             |
+| sv-en         | pretrained | 34.9 | 37.6             |
+
+
 ## Data Analysis
 
 We performed Exploratory Data Analysis (EDA) in [`notebooks/1-EDA.ipynb`](./notebooks/1-EDA.ipynb). The key findings of this analysis include:
