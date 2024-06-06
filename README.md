@@ -23,7 +23,7 @@ git clone https://github.com/AdamNavarroLiriano/language-api
 2. After the repository is cloned, initialize the server running the follwoing command:
 
 ```bash
-docker compose up --build -d
+docker compose up --build
 ```
 
 Once the setup is complete, our Language Translation API will be up and running, as a default on port 80 of your localhost. You can access the API documentation at http://localhost/docs.
