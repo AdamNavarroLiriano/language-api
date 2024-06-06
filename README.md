@@ -2,7 +2,13 @@
 
 ## Project Overview
 
-This project aims to create a versatile Language Translation API, currently supporting translations between English (en), Danish (da), and Swedish (sv). In its current version, the API allows translations for the following language pairs: en-da, da-en, en-sv, sv-en. Our future goal is to expand this list to support up to 12 language pairs.
+This project aims to create a Language Translation API based on Machine Learning. Currently, the API supports translations for four language pairs:
+- Danish - English (da-en)
+- English - Danish (en-da)
+- English - Swedish (en-sv)
+- Swedish - English (sv-en).
+
+Our immediate goal is to expand the API to support up to 12 language pairs, adding support for Norwegian Bokmål (nb), and allowing for translations in all possible combinations of language pairs in the set {da, en, nb, sv}.
 
 ## Getting Started
 
@@ -14,15 +20,15 @@ To use this project, follow these steps:
 git clone https://github.com/AdamNavarroLiriano/language-api
 ```
 
-2. After the repository is cloned, initialize the project by running:
+2. After the repository is cloned, initialize the server running the follwoing command:
 
 ```bash
 docker compose up --build -d
 ```
 
-Once the setup is complete, our Language Translation API will be up and running. You can access the API documentation at http://localhost/docs.
+Once the setup is complete, our Language Translation API will be up and running, as a default on port 80 of your localhost. You can access the API documentation at http://localhost/docs.
 
-Here's an example of how to translate "Hello, world!" from English to Swedish using the API:
+To interact with the API, you must send POST requests to the /translate/sentence/ endpoint. Here's an example of how to translate "Hello, world!" from English to Swedish using the API:
 
 ```bash
 curl -X 'POST' \
@@ -42,38 +48,51 @@ The API will respond with:
 
 ## Development Approach
 
-We used pretrained models from the MarianMT model family for en-da, da-en, and sv-en language pairs. For en-sv pair, we trained a specialized model based on the checkpoint available at HuggingFace as of June 2024. Models were evaluated using the BLEU metric, implemented via the sacrebleu python package.
+We used both pretrained models and finetuned models, based on the [Marian](https://huggingface.co/docs/transformers/en/model_doc/marian) family of models for Machine Translation. In particular
+* Language pairs en-da, da-en, and sv-en leverage pretrained models. 
+* For en-sv pair, we trained a specialized model based on the checkpoint available at HuggingFace as of June 2024. Finetuning was performed at kaggle and code is avaiable at [`notebooks/1-EDA.ipynb`](./notebooks/2-finetune.ipynb)
+ 
+All models were evaluated using the BLEU metric, implemented via the [sacrebleu](https://github.com/mjpost/sacrebleu) python package.
 
 ## Data Analysis
 
-We performed Exploratory Data Analysis (EDA) in `notebooks/1-EDA.ipynb`. The key findings of this analysis include:
+We performed Exploratory Data Analysis (EDA) in [`notebooks/1-EDA.ipynb`](./notebooks/1-EDA.ipynb). The key findings of this analysis include:
 
-- The number of observations for each language pair in the training data varied between 89K and 158K.
-- Danish (da) had the highest number of translations as both a source and target language.
-- Texts in the da-en language pair were generally shorter than others.
-- Norwegian Bokmål (nb) is not generally supported for Machine Translation tasks, limiting its interaction with other languages.
-- Models with Norwegian Bokmål (nb) as either source or target language performed the poorest due to the lack of direct support from MarianMT models.
-- Comparing the language pairs en-sv and sv-en, the latter performed significantly better.
+- The number of observations for each language pair in the training data varies between 89K and 158K.
+- Danish (da) had the highest number of translations as both a source and target language, while English (en) has the lowest amount of observations.
+- English (en) and Swedish (sv) had the smallest amount of observations as source language.
+- Texts in the da-en language pair were generally shorter than the rest of the 11 pairs.
+- There are four language pairs (en-nb, sv-da, da-sv, nb-en) which are not supported by pretrained models from the MarianMT model family.
+- In HuggingFace, Norwegian Bokmål (nb) is not generally supported for Machine Translation tasks, limiting its interaction with other languages. As a substitue, we can use the 'no' language code, and some language pairs will be available.
+- Using pretrained models from the this model family, the language pairs da-en and en-da have the highest BLEU score.
+- The lowest performing models all have Norwegian Bokmål (nb) as either the source language or target language.
+- Apart from languages with **`nb`** interaction, the language pair en-sv has the lowest performing model, and it's BLEU score is significantly lower than its counterpart language pair sv-en, which has the third highest BLEU score out of all models.
 
 ## Scaling and Optimization
 
-Scaling up the training process may require the use of specialized hardware such as GPUs and TPUs, possibly in a distributed manner. Smaller models, different architectures or quantization can be used to reduce memory usage and speed up inference.
+Scaling up the training process may require the use of specialized hardware such as GPUs and TPUs, possibly in a distributed manner. Such specialized software can also be used at inference time to improve the API's latency response.
 
-Asynchronous processing can aid in handling multiple requests simultaneously. Storing models in an accessible way can help avoid repeated downloads, thereby improving performance.
+Smaller models (by distilling the models), different architectures or quantization can also be used to reduce memory usage and speed up inference. The trade-off would be the quality of the output, and therefore a decrease in the BLEU metric.  
+
+Asynchronous processing can aid in handling multiple requests simultaneously. Storing models in an accessible way can help avoid repeated downloads, thereby improving latency time and unnecessary processing tasks. 
+
+Investigating autoscaling with Kubernetes can be beneficial, as we could potentially scale up the service when there's a lot of traffic.
 
 ## Making the API Production-Ready
 
 Before deploying the API for production use, it's crucial to implement security features such as authentication and authorization. HTTPS protocol should be adopted for secure communication over the internet.
 
-Containerization and orchestration can help scale the service based on load and model complexity. Asynchronous programming, hardware optimization, and efficient model loading can enhance latency.
+Container orchestration can help scale the service based on load and model complexity. Asynchronous programming, hardware optimization, and efficient model loading can enhance latency.
 
-There are other software engineering practices that ought to be implemented such as unit testing and integration testing. This gives confidence in the workings of the software and their dependencies. Additionally, it can serve as documentation for future developers working on the product.
+There are other software engineering practices that ought to be implemented such as unit testing and integration testing. This gives confidence in the workings of the software and their interactions. Additionally, it can serve as documentation for future developers working on the product.
 
 From an ethical standpoint, the quality of the models' output should be monitored to ensure the accuracy and fairness of translations.
 
 ## Roadmap and Future Scope
 
-To further expand and improve the MT system, consider using larger and more diverse datasets for training, such as the ones listed [here](https://metatext.io/datasets-list/translation-task). The use of pretrained or multilingual models can expedite the training process.
+To further expand and improve the MT system, consider using larger and more diverse datasets for training, such as the ones listed [here](https://metatext.io/datasets-list/translation-task). One might also consider pairing subtitles and closed-captions for same content on different languages. Whenever possible, pairing information from the web is possible through webscraping.
+
+The use of pretrained or multilingual models can expedite the training process, and serve as an initial base to support more language pairs.
 
 An strategic roadmap for the product looks as follow:
 1. Introduce authentication and authorization, and enable HTTPS on the container. This is necessary for security reasons.
