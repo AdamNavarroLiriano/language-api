@@ -50,7 +50,7 @@ The API will respond with:
 
 We used both pretrained models and finetuned models, based on the [Marian](https://huggingface.co/docs/transformers/en/model_doc/marian) family of models for Machine Translation. In particular
 * Language pairs en-da, da-en, and sv-en leverage pretrained models. 
-* For en-sv pair, we trained a specialized model based on the checkpoint available at HuggingFace as of June 2024. Finetuning was performed at kaggle and code is avaiable at [`notebooks/1-EDA.ipynb`](./notebooks/2-finetune.ipynb)
+* For en-sv pair, we trained a specialized model based on the checkpoint available at HuggingFace as of June 2024. Finetuning was performed at kaggle and code is avaiable at [`notebooks/2-finetune.ipynb`](./notebooks/2-finetune.ipynb)
  
 All models were evaluated using the BLEU metric, implemented via the [sacrebleu](https://github.com/mjpost/sacrebleu) python package.
 
