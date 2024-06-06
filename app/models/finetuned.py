@@ -1,5 +1,6 @@
 from transformers import MarianMTModel, MarianTokenizer
 import os
+from ..models import CACHE_PATH
 
 FINETUNED_PAIRS: tuple[tuple[str]] = (("en", "sv"),)
 FINETUNED_PATH: str = "adamnavarro"
@@ -23,7 +24,7 @@ def load_finetuned_model(
 
     # Load from huggingface or cache
     tokenizer = MarianTokenizer.from_pretrained(model_name)
-    model = MarianMTModel.from_pretrained(model_name)
+    model = MarianMTModel.from_pretrained(model_name, cache_dir=CACHE_PATH)
 
     return {"tokenizer": tokenizer, "model": model}
 
